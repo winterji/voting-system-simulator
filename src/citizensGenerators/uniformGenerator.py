@@ -1,5 +1,5 @@
 import random
-from citizens import SimpleVoter, SimpleAdvancedVoter
+from citizens import *
 
 class UniformGenerator:
     def __init__(self, left_bound: int = -50, right_bound: int = 50):
@@ -17,7 +17,7 @@ class UniformSimpleVoterGenerator(UniformGenerator):
         """
         self.population_size = population_size
         for i in range(self.population_size):
-            political_affiliation = random.uniform(self.left_bound, self.right_bound)  # Political affiliation in the range [0, 1]
+            political_affiliation = random.uniform(self.left_bound, self.right_bound)  # Political affiliation in the range [x, y]
             voter = SimpleVoter(id="voter-" + str(i), political_affiliation=political_affiliation, political_min=self.left_bound, political_max=self.right_bound)
             self.citizens.append(voter)
         return self.citizens
@@ -32,8 +32,21 @@ class UniformSimpleAdvancedVoterGenerator(UniformGenerator):
         """
         self.population_size = population_size
         for i in range(self.population_size):
-            political_affiliation = random.uniform(self.left_bound, self.right_bound)  # Political affiliation in the range [0, 1]
+            political_affiliation = random.uniform(self.left_bound, self.right_bound)  # Political affiliation in the range [x, y]
             voter = SimpleAdvancedVoter(id="SimpleADVvoter-" + str(i), political_affiliation=political_affiliation, political_min=self.left_bound, political_max=self.right_bound)
             self.citizens.append(voter)
         return self.citizens
     
+class Uniform2DVoterGenerator(UniformGenerator):
+    def generate(self, population_size: int, voterClass):
+        """
+        Generates a uniform distribution of citizens.
+        Each citizen has a unique ID and a political affiliation.
+        Political affiliations are evenly distributed across the population.
+        """
+        self.population_size = population_size
+        for i in range(self.population_size):
+            political_affiliation = [random.uniform(self.left_bound, self.right_bound), random.uniform(self.left_bound, self.right_bound)]  # Political affiliation in the range [x, y]
+            voter = voterClass(id="voter-" + str(i), political_affiliation=political_affiliation, political_min=self.left_bound, political_max=self.right_bound)
+            self.citizens.append(voter)
+        return self.citizens
