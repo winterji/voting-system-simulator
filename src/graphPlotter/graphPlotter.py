@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-COLORS = ['blue', 'red', 'green', 'purple', 'white', 'black', 'orange']
+COLORS = ['blue', 'red', 'green', 'purple', 'orange', 'brown', 'pink', 'cyan', 'magenta', 'yellow']
 
 def plot_results_1D(voters, candidates, results, winner):
     candidates_colors = {candidate: None for candidate in candidates}
