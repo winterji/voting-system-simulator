@@ -1,12 +1,15 @@
 
 
 class Citizen:
-    def __init__(self, id: str, political_affiliation, age: int = -1):
+    def __init__(self, id: str, political_affiliation, political_min, political_max, age: int = -1):
         self.id: str = id
         self.political_affiliation = political_affiliation
         self.age: int = age
         self.voted_for = None
         self.has_voted: bool = False
+        self.willingness_to_vote: float = 1.0  # Default willingness to vote
+        self.political_min = political_min
+        self.political_max = political_max
 
     def __repr__(self):
         return f"Citizen(id={self.id}, age={self.age}, political affiliation={self.political_affiliation})"

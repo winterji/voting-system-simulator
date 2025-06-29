@@ -24,7 +24,7 @@ class Simulator:
         print("Voting results:")
         print(self.voting_system.get_results())
         print("Winner:", self.voting_system.get_winner())
-        return self.voting_system.get_results()
+        return (self.voting_system.get_results(), self.voting_system.get_winner())
         
 
 

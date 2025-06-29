@@ -6,8 +6,8 @@ class Candidate(Citizen):
     A candidate has an ID, political affiliation, age, and a popularity score.
     The candidate has popularity.
     """
-    def __init__(self, id: str, political_affiliation, age: int = -1, popularity: float = 1.0):
-        super().__init__(id, political_affiliation, age)
+    def __init__(self, id: str, political_affiliation, political_min, political_max, age: int = -1, popularity: float = 1.0):
+        super().__init__(id, political_affiliation, political_min, political_max, age)
         self.popularity: int = popularity
 
     def __repr__(self):
