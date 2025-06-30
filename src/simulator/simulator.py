@@ -2,11 +2,12 @@ from citizens import *
 from voting_systems import *
 
 class Simulator:
-    def __init__(self, voting_system, voters, candidates):
+    def __init__(self, voting_system, voters, candidates, options):
         self.voters = voters
         self.candidates = candidates
-        self.voting_system = voting_system(candidates)
+        self.voting_system = voting_system(candidates, options)
         self.resutls = []
+        self.options = options
 
     def setup(self):
         pass

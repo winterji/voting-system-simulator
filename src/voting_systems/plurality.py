@@ -3,7 +3,7 @@ from .abstract_voting_system import AbstractVotingSystem
 
 class PluralityVotingSystem(AbstractVotingSystem):
 
-    def __init__(self, candidates):
+    def __init__(self, candidates, options):
         super().__init__(candidates)
         self.votes_for_candidates = {candidate: 0 for candidate in candidates}
         # print(self.candidates)

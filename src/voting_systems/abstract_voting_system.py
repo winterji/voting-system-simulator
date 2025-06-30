@@ -5,13 +5,14 @@ class AbstractVotingSystem:
     Abstract base class for voting systems.
     """
 
-    def __init__(self, candidates):
+    def __init__(self, candidates, options):
         """
         Initialize the voting system with a list of candidates and empty list of votes.
         Votes is a list of dictionaries with keys 'voter' and 'candidate'.
         :param candidates: List of candidates participating in the election.
         """
         self.candidates = candidates
+        self.options = options
         self.votes = []
 
     def get_candidates(self):

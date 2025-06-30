@@ -6,6 +6,7 @@ class Citizen:
         self.political_affiliation = political_affiliation
         self.age: int = age
         self.voted_for = None
+        self.approved_candidates = []
         self.has_voted: bool = False
         self.willingness_to_vote: float = 1.0  # Default willingness to vote
         self.political_min = political_min
@@ -40,5 +41,15 @@ class Citizen:
         if not self.has_voted:
             self.voted_for = candidate
             self.has_voted = True
+        else:
+            raise ValueError("Citizen has already voted.")
+        
+    def approve(self, candidate):
+        """
+        Approves a candidate without marking the citizen as having voted.
+        This is useful for voting systems where citizens can approve multiple candidates.
+        """
+        if not self.has_voted:
+            self.approved_candidates.append(candidate)
         else:
             raise ValueError("Citizen has already voted.")
