@@ -57,4 +57,5 @@ class SimpleAdvancedVoter(SimpleVoter):
             self.willingness_to_vote = 1.0 - ranked_candidates[0]["distance"]/self.political_max
         # print("ranked candidates for " + self.get_id())
         # print(ranked_candidates)
+        self.ranked_candidates = ranked_candidates
         return ranked_candidates

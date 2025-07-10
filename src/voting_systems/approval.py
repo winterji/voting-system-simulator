@@ -2,6 +2,9 @@ import random
 from .abstract_voting_system import AbstractVotingSystem
 
 class ApprovalVotingSystem(AbstractVotingSystem):
+    """
+    Approval Voting System implementation. Needs "approval_distance" in options.
+    """
 
     def __init__(self, candidates, options):
         super().__init__(candidates, options)

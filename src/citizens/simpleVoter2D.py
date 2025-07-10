@@ -37,6 +37,7 @@ class SimpleVoter2D(Citizen):
                     (political_affiliation[1] - self.political_affiliation[1]) ** 2) ** 0.5
             candidate_distances.append({"candidate": candidate, "distance": res})
         ranked_candidates = sorted(candidate_distances, key=lambda x: x["distance"])
+        self.ranked_candidates = ranked_candidates
         # print("ranked candidates for " + self.get_id())
         # print(ranked_candidates)
         return ranked_candidates
@@ -77,6 +78,7 @@ class SimpleAdvancedVoter2D(Citizen):
                     (political_affiliation[1] - self.political_affiliation[1]) ** 2) ** 0.5
             candidate_distances.append({"candidate": candidate, "distance": res})
         ranked_candidates = sorted(candidate_distances, key=lambda x: x["distance"])
+        self.ranked_candidates = ranked_candidates
         self.willingness_to_vote = 1.0 - ranked_candidates[0]["distance"]/(self.political_max*2)
         # print("ranked candidates for " + self.get_id())
         # print(ranked_candidates)

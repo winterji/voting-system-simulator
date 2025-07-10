@@ -99,3 +99,45 @@ def plot_results_2D(voters, candidates, results, winner):
 
     # Show the plot in a new window
     plt.show()
+
+def plot_results_per_rounds_2D(voters, candidates, results, winner):
+    counter = 0
+    for rnd in results:
+        counter += 1
+        round_candidates = list(rnd.keys())
+        candidates_colors = {candidate: None for candidate in round_candidates}
+        fig, ax = plt.subplots(figsize=(10, 10))
+        
+        # Plot candidates (as triangles)
+        index = 0
+        for candidate in round_candidates:
+            color = COLORS[index % len(COLORS)]
+            candidate_political = candidate.get_political_affiliation()
+            ax.plot(candidate_political[0], candidate_political[1], '^', color=color, markersize=20)
+            ax.text(candidate_political[0], candidate_political[1] + 1, candidate.id, color='black', fontsize=8, ha='center')
+            index += 1
+            candidates_colors[candidate] = color
+
+        # Plot voters (as circles)
+        for voter in voters:
+            voter_color = 'grey'
+            if voter.has_voted:
+                voted_for = None
+                for cand in voter.ranked_candidates:
+                    if cand["candidate"] in round_candidates:
+                        voted_for = cand["candidate"]
+                        break
+                # print("voted for " + str(voted_for) + " in round " + str(counter))
+                voter_color = candidates_colors[voted_for]
+            ax.plot(voter.get_political_affiliation()[0], voter.get_political_affiliation()[1], 'o', color=voter_color, markersize=5)
+            # ax.text(voter.get_political_affiliation()[0], voter.get_political_affiliation()[1] + 1, voter.id, ha='center', color='blue')
+
+        # Styling
+        ax.set_xlabel("Political Affiliation X")
+        ax.set_ylabel("Political Affiliation Y")
+        # eliminated_candidate = min()
+        ax.set_title("Round " + str(counter))
+        plt.tight_layout()
+
+        # Show the plot in a new window
+        plt.show()

@@ -20,12 +20,12 @@ class Simulator:
                 # Vote for the candidate
                 self.voting_system.vote(voter, ranked_candidates)
 
-        self.resutls = self.voting_system.get_results()
+        self.results = self.voting_system.get_results()
         # Print the results of the voting system
         print("Voting results:")
-        print(self.voting_system.get_results())
+        print(self.results)
         print("Winner:", self.voting_system.get_winner())
-        return (self.voting_system.get_results(), self.voting_system.get_winner())
+        return (self.results, self.voting_system.get_winner())
         
 
 

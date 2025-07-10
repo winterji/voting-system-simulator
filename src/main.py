@@ -27,16 +27,17 @@ candidates = [
     Candidate("SPD", [6, -9], LEFT_BOUND, RIGHT_BOUND),
     Candidate("Piráti", [-2, 8], LEFT_BOUND, RIGHT_BOUND),
     Candidate("STAN", [1, 4], LEFT_BOUND, RIGHT_BOUND),
-    # Candidate("KSČM", [-9, -7], LEFT_BOUND, RIGHT_BOUND),
-    # Candidate("SOCDEM", [-5, -3], LEFT_BOUND, RIGHT_BOUND),
+    Candidate("KSČM", [-9, -7], LEFT_BOUND, RIGHT_BOUND),
+    Candidate("SOCDEM", [-5, -3], LEFT_BOUND, RIGHT_BOUND),
     # Candidate("Zelení", [-6, 9], LEFT_BOUND, RIGHT_BOUND),
 ]
 
 # Create a simulator instance and supply it with a voting system and voters
-sim = Simulator(ApprovalVotingSystem, voters, candidates, options={
-    "approval_distance": 10
+sim = Simulator(InstantRunoffVotingSystem, voters, candidates, options={
+    
 })
 results, winner = sim.run()
 
 # plot_results_2D(voters, candidates, results, winner)
-plot_approvals_2D(voters, candidates, results, winner, sim.voting_system.approval_distance)
+# plot_approvals_2D(voters, candidates, results, winner, sim.voting_system.approval_distance)
+plot_results_per_rounds_2D(voters, candidates, results, winner)
