@@ -71,6 +71,6 @@ class InstantRunoffVotingSystem(AbstractVotingSystem):
         winner = None
         while winner is None:
             winner = self.process_round()
-        print(f"Winner after round {self.round}: {winner}")
+        print(f"Total winner: {winner}")
 
         return self.votes_per_round
