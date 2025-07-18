@@ -44,6 +44,12 @@ class Citizen:
         else:
             raise ValueError("Citizen has already voted.")
         
+    def vote_again(self, candidate):
+        if self.has_voted:
+            self.voted_for = candidate
+        else:
+            raise ValueError("Citizen has not voted yet")
+        
     def approve(self, candidate):
         """
         Approves a candidate without marking the citizen as having voted.

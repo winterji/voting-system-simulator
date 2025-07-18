@@ -33,11 +33,11 @@ candidates = [
 ]
 
 # Create a simulator instance and supply it with a voting system and voters
-sim = Simulator(InstantRunoffVotingSystem, voters, candidates, options={
-    
+sim = Simulator(CondorcetVotingSystem, voters, candidates, options={
+    # "approval_distance": 5
 })
 results, winner = sim.run()
 
 # plot_results_2D(voters, candidates, results, winner)
 # plot_approvals_2D(voters, candidates, results, winner, sim.voting_system.approval_distance)
-plot_results_per_rounds_2D(voters, candidates, results, winner)
+# plot_results_per_rounds_2D(voters, candidates, results, winner)

@@ -9,7 +9,7 @@ class ApprovalVotingSystem(AbstractVotingSystem):
     def __init__(self, candidates, options):
         super().__init__(candidates, options)
         if "approval_distance" not in options:
-            raise ValueError("Approval distance must be provided in options for Approval voting system.")
+            raise ValueError("approval_distance must be provided in options for Approval voting system.")
         self.approval_distance = options["approval_distance"]
         self.approvals_for_candidates = {candidate: 0 for candidate in candidates}
         # print(self.candidates)
