@@ -43,7 +43,6 @@ class CondorcetVotingSystem(AbstractVotingSystem):
 
     def get_results(self):
         self.candidate_wins = {candidate: [] for candidate in self.candidates}
-        print(self.pairwise_matrix)
         # find if someone is Condorcet winner
         for candidate, comparisons in self.pairwise_matrix.items():
             # print(f"Candidate {candidate.id} comparisons: {comparisons}")
@@ -54,6 +53,6 @@ class CondorcetVotingSystem(AbstractVotingSystem):
                     if comparisons[other] > self.pairwise_matrix[other][candidate]:
                         self.candidate_wins[candidate].append(other)
             # Check if candidate is a Condorcet winner
-            if len(self.candidate_wins[candidate]) >= len(self.candidates) - 1:
-                return {"winner": candidate, "pairwise_matrix": self.pairwise_matrix}
+        if len(self.candidate_wins[candidate]) >= len(self.candidates) - 1:
+            return {"winner": candidate, "pairwise_matrix": self.pairwise_matrix}
         return {"winner": None, "pairwise_matrix": self.pairwise_matrix}

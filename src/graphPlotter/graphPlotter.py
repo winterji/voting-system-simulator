@@ -69,6 +69,41 @@ def plot_approvals_2D(voters, candidates, results, winner, approval_distance):
     # Show the plot in a new window
     plt.show()
 
+def plot_scores_2D(voters, candidates, results, winner, score_distances):
+    candidates_colors = {candidate: None for candidate in candidates}
+    fig, ax = plt.subplots(figsize=(10, 10))
+    
+    # Plot candidates and their approval distances as circles
+    index = 0
+    for candidate in candidates:
+        color = COLORS[index % len(COLORS)]
+        candidate_political = candidate.get_political_affiliation()
+        ax.plot(candidate_political[0], candidate_political[1], '^', color=color, markersize=20)
+        ax.text(candidate_political[0], candidate_political[1] + 1, candidate.id, color='black', fontsize=8, ha='center')
+        index += 1
+        candidates_colors[candidate] = color
+    # Plot voters and their approval distances as circles
+    for voter in voters:
+        voter_color = 'grey'
+        ax.plot(voter.get_political_affiliation()[0], voter.get_political_affiliation()[1], 'o', color=voter_color, markersize=5)
+        # ax.text(voter.get_political_affiliation()[0], voter.get_political_affiliation()[1] + 1, voter.id, ha='center', color='blue')
+    # Plot approval distances as circles around candidates
+    for candidate in candidates:
+        candidate_political = candidate.get_political_affiliation()
+        circle = plt.Circle(candidate_political, score_distances[0], color=candidates_colors[candidate], fill=False, linestyle='--')
+        ax.add_artist(circle)
+        circle = plt.Circle(candidate_political, score_distances[1], color=candidates_colors[candidate], fill=False, linestyle='--')
+        ax.add_artist(circle)
+    # Styling
+    ax.set_xlabel("Political Affiliation X")
+    ax.set_ylabel("Political Affiliation Y")
+    ax.set_title("Winner - " + winner.id)
+    plt.xlim(-10, 10)
+    plt.ylim(-10, 10)
+    plt.tight_layout() 
+    # Show the plot in a new window
+    plt.show()
+
 def plot_results_2D(voters, candidates, results, winner):
     candidates_colors = {candidate: None for candidate in candidates}
     fig, ax = plt.subplots(figsize=(10, 10))
@@ -135,8 +170,15 @@ def plot_results_per_rounds_2D(voters, candidates, results, winner):
         # Styling
         ax.set_xlabel("Political Affiliation X")
         ax.set_ylabel("Political Affiliation Y")
-        # eliminated_candidate = min()
-        ax.set_title("Round " + str(counter))
+        title = "Round " + str(counter)
+        is_winner = max(rnd.values()) > sum(rnd.values()) / 2
+        if not is_winner:
+            eliminated_candidate = min(round_candidates, key=lambda x: rnd[x])
+            title += " - Eliminate: " + eliminated_candidate.id
+        else:
+            title += " - Winner: " + max(round_candidates, key=lambda x: rnd[x]).id
+
+        ax.set_title(title)
         plt.tight_layout()
 
         # Show the plot in a new window
