@@ -3,10 +3,11 @@ from citizens import *
 from .uniformGenerator import UniformGenerator
 
 class ClusterDefinition:
-    def __init__(self, center: tuple[float, float], spread: float, relative_size: float):
+    def __init__(self, center: tuple[float, float], spread: float, relative_size: float, willingness_to_vote: float = 1.0):
         self.center: tuple[float, float] = center
         self.spread: float = spread
         self.relative_size: float = relative_size
+        self.willingness_to_vote = willingness_to_vote
     
     def __repr__(self):
         return f"ClusterDefinition(center={self.center}, spread={self.spread}, relative_size={self.relative_size})"
@@ -85,11 +86,16 @@ class ClusteredVoterGenerator(UniformGenerator):
                 affiliation_x = max(self.left_bound, min(self.right_bound, affiliation_x))
                 affiliation_y = max(self.left_bound, min(self.right_bound, affiliation_y))
 
+                if cluster.willingness_to_vote:
+                    willingness_to_vote = cluster.willingness_to_vote
+                else:
+                    willingness_to_vote = 1.0
                 voter = voterClass(
                     id=f"voter-c{cluster_idx}-{uid}",
                     political_affiliation=[affiliation_x, affiliation_y],
                     political_min=self.left_bound,
-                    political_max=self.right_bound
+                    political_max=self.right_bound,
+                    willingness_to_vote=willingness_to_vote
                 )
                 self.citizens.append(voter)
                 uid += 1

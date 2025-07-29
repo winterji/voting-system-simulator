@@ -22,18 +22,18 @@ clusters_v1 = [
 ]
 
 clusters_v2 = [
-    ClusterDefinition((0, -8), 1.5, 0.12),
-    ClusterDefinition((1, -5), 2, 0.18),
-    ClusterDefinition((-7, -6), 1, 0.04),
-    ClusterDefinition((3, -4), 1.2, 0.06),
-    ClusterDefinition((6, -1), 1.5, 0.09),
-    ClusterDefinition((2, 3), 1.5, 0.08),
-    ClusterDefinition((-1, 7), 2, 0.13),
-    ClusterDefinition((-1, -1), 3, 0.3),
+    ClusterDefinition((0, -8), 1.5, 0.12, willingness_to_vote=0.85),
+    ClusterDefinition((1, -5), 2, 0.23, willingness_to_vote=0.8),
+    ClusterDefinition((-7, -6), 1, 0.04, willingness_to_vote=0.88),
+    ClusterDefinition((3, -4), 1.2, 0.06, willingness_to_vote=0.85),
+    ClusterDefinition((6, -1), 1.5, 0.09, willingness_to_vote=0.9),
+    ClusterDefinition((2, 3), 1.5, 0.08, willingness_to_vote=0.85),
+    ClusterDefinition((-1, 7), 2, 0.17, willingness_to_vote=0.7),
+    ClusterDefinition((-1, -1), 3, 0.2, willingness_to_vote=0.10),
 ]
 
 generator = ClusteredVoterGenerator(LEFT_BOUND, RIGHT_BOUND, clusters=clusters_v2)
-voters = generator.generate(1500, SimpleAdvancedVoter2D)
+voters = generator.generate(1500, AdvancedVoter2D)
 
 # candidates = [
 #     Candidate("candidate1", 13, LEFT_BOUND, RIGHT_BOUND),
@@ -43,16 +43,19 @@ voters = generator.generate(1500, SimpleAdvancedVoter2D)
 # ]
 
 candidates = [
-    Candidate("ODS", [6, -3], LEFT_BOUND, RIGHT_BOUND),
-    Candidate("TOP 09", [7, 2], LEFT_BOUND, RIGHT_BOUND),
-    Candidate("KDU-ČSL", [3, -5], LEFT_BOUND, RIGHT_BOUND),
-    Candidate("ANO 2011", [2, -6], LEFT_BOUND, RIGHT_BOUND),
-    Candidate("SPD", [6, -9], LEFT_BOUND, RIGHT_BOUND),
-    Candidate("Piráti", [-2, 8], LEFT_BOUND, RIGHT_BOUND),
-    Candidate("STAN", [1, 4], LEFT_BOUND, RIGHT_BOUND),
-    Candidate("KSČM", [-9, -7], LEFT_BOUND, RIGHT_BOUND),
-    Candidate("SOCDEM", [-5, -3], LEFT_BOUND, RIGHT_BOUND),
-    # Candidate("Zelení", [-6, 9], LEFT_BOUND, RIGHT_BOUND),
+    Candidate("Spolu", [6, -2.2], LEFT_BOUND, RIGHT_BOUND, popularity=0.85),
+    # Candidate("ODS", [6, -3], LEFT_BOUND, RIGHT_BOUND, popularity=0.75),
+    # Candidate("TOP 09", [7, 2], LEFT_BOUND, RIGHT_BOUND, popularity=0.45),
+    # Candidate("KDU-ČSL", [3, -5], LEFT_BOUND, RIGHT_BOUND, popularity=0.4),
+    Candidate("ANO 2011", [2, -6], LEFT_BOUND, RIGHT_BOUND, popularity=0.9),
+    Candidate("SPD", [3, -8], LEFT_BOUND, RIGHT_BOUND, popularity=0.9),
+    Candidate("Piráti", [-2, 8], LEFT_BOUND, RIGHT_BOUND, popularity=0.6),
+    Candidate("STAN", [1, 4], LEFT_BOUND, RIGHT_BOUND, popularity=0.55),
+    Candidate("KSČM", [-9, -7], LEFT_BOUND, RIGHT_BOUND, popularity=0.25),
+    Candidate("SOCDEM", [-5, -3], LEFT_BOUND, RIGHT_BOUND, popularity=0.2),
+    Candidate("Zelení", [-6, 9], LEFT_BOUND, RIGHT_BOUND, popularity=0.35),
+    Candidate("Stačilo!", [-4, -5], LEFT_BOUND, RIGHT_BOUND, popularity=0.45),
+    Candidate("Motoristé", [7, -7], LEFT_BOUND, RIGHT_BOUND, popularity=0.35),
 ]
 
 # select voting system according to parameter
@@ -68,20 +71,20 @@ if len(sys.argv) > 1:
             print("No approval distance provided, using default 3")
             options = {"approval_distance": 3}
         else:
-            options = {"approval_distance": sys.argv[2]}
+            options = {"approval_distance": float(sys.argv[2])}
     elif voting_system_name == "instant_runoff" or voting_system_name == "irv" or voting_system_name == "runoff":
         voting_system = InstantRunoffVotingSystem
     elif voting_system_name == "score" or voting_system_name == "scoring":
         voting_system = ScoringVotingSystem
         if len(sys.argv) <= 3:
-            print("No max_score or score_limits provided, using default max_score 3 and score_limits [1, 3]")
+            print("No max_score or score_limits provided, using default max_score 3 and score_limits 1,3")
             options = {
                 "max_score": 3,
                 "score_limits": [1, 3]
             }
         else:
             options = {
-                "max_score": sys.argv[2],
+                "max_score": int(sys.argv[2]),
                 "score_limits": [int(x) for x in sys.argv[3].split(",")]
             }
 
@@ -93,11 +96,7 @@ else:
     print("No voting system set - using default: PluralityVotingSystem")
 
 # Create a simulator instance and supply it with a voting system and voters
-sim = Simulator(voting_system, voters, candidates, options={
-    # "approval_distance": 5
-    # "max_score": 3,
-    # "score_limits": [1, 3]
-})
+sim = Simulator(voting_system, voters, candidates, options=options)
 results, winner = sim.run()
 
 if voting_system == ApprovalVotingSystem:
@@ -107,5 +106,6 @@ elif voting_system == ScoringVotingSystem:
 elif voting_system == InstantRunoffVotingSystem:
     plot_results_per_rounds_2D(voters, candidates, results, winner)
 elif voting_system == PluralityVotingSystem:
+    print_percantage_results(results)
     plot_results_2D(voters, candidates, results, winner)
 

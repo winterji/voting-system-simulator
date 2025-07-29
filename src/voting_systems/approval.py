@@ -53,5 +53,7 @@ class ApprovalVotingSystem(AbstractVotingSystem):
 
     def get_results(self):
         res = {candidate: self.approvals_for_candidates[candidate] for candidate in self.candidates}
-        res["not_voted"] = len(self.not_voted)
-        return res
+        sorted_candidates = sorted(res, key=lambda k: res[k], reverse=True)
+        sorted_res = {candidate: res[candidate] for candidate in sorted_candidates}
+        sorted_res["not_voted"] = len(self.not_voted)
+        return sorted_res

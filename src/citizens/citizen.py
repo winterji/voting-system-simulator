@@ -1,14 +1,14 @@
 
 
 class Citizen:
-    def __init__(self, id: str, political_affiliation, political_min, political_max, age: int = -1):
+    def __init__(self, id: str, political_affiliation, political_min, political_max, age: int = -1, willingness_to_vote: float = 1.0):
         self.id: str = id
         self.political_affiliation = political_affiliation
         self.age: int = age
         self.voted_for = None
         self.approved_candidates = []
         self.has_voted: bool = False
-        self.willingness_to_vote: float = 1.0  # Default willingness to vote
+        self.willingness_to_vote: float = willingness_to_vote  # Default willingness to vote is 1.0
         self.political_min = political_min
         self.political_max = political_max
 

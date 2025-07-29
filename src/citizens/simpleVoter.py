@@ -9,13 +9,13 @@ class SimpleVoter(Citizen):
     
     The SimpleVoter has political affiliation as a single integer. He ranks candidates per distance in one dimensional space.
     """
-    def __init__(self, id: str, political_affiliation, political_min, political_max, age: int = -1):
+    def __init__(self, id: str, political_affiliation, political_min, political_max, age: int = -1, willingness_to_vote: float = 1.0):
         """"
         id: str
         political_affiliation
         age (optional)
         """
-        super().__init__(id, political_affiliation, political_min, political_max, age)
+        super().__init__(id, political_affiliation, political_min, political_max, age, willingness_to_vote)
 
     def __repr__(self):
         return f"Voter(id={self.id}, age={self.age}, political affiliation={self.political_affiliation}, voted={self.voted})"
@@ -42,8 +42,8 @@ class SimpleAdvancedVoter(SimpleVoter):
     The SimpleAdvancedVoter has political affiliation as a single integer. He ranks candidates per distance in one dimensional space.
     If the closest candidate is too far away, the voter does not vote.
     """
-    def __init__(self, id: str, political_affiliation, political_min, political_max, age: int = -1):
-        super().__init__(id, political_affiliation, political_min, political_max, age)
+    def __init__(self, id: str, political_affiliation, political_min, political_max, age: int = -1, willingness_to_vote: float = 1.0):
+        super().__init__(id, political_affiliation, political_min, political_max, age, willingness_to_vote)
 
     def rank_candidates(self, candidates: list[Candidate]) -> list[Candidate]:
         candidate_distances = []
@@ -54,7 +54,7 @@ class SimpleAdvancedVoter(SimpleVoter):
         ranked_candidates = sorted(candidate_distances, key=lambda x: x["distance"])
         if ranked_candidates and ranked_candidates[0]["distance"] > 10:
             # If the closest candidate is too far away, the voter does not vote
-            self.willingness_to_vote = 1.0 - ranked_candidates[0]["distance"]/self.political_max
+            self.willingness_to_vote = self.willingness_to_vote * (1.0 - ranked_candidates[0]["distance"]/self.political_max)
         # print("ranked candidates for " + self.get_id())
         # print(ranked_candidates)
         self.ranked_candidates = ranked_candidates

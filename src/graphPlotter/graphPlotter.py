@@ -2,6 +2,19 @@ import matplotlib.pyplot as plt
 
 COLORS = ['blue', 'red', 'green', 'purple', 'orange', 'brown', 'pink', 'cyan', 'magenta', 'yellow']
 
+def print_percantage_results(results):
+    not_voted = results["not_voted"]
+    del results["not_voted"]
+    total_votes = sum(results.values())
+    # sort from highest to lowest
+    results = dict(sorted(results.items(), key=lambda item: item[1], reverse=True))
+    for candidate, votes in results.items():
+        percentage = (votes / total_votes) * 100 if total_votes > 0 else 0
+        print(f"{candidate}: {votes} votes ({percentage:.2f}%)")
+    print(f"Total votes: {total_votes}")
+    print(f"Not voted: {not_voted}")
+    print(f"Voters turnout: {((1 - not_voted/(total_votes+not_voted))*100):.2f}%")
+
 def plot_results_1D(voters, candidates, results, winner):
     candidates_colors = {candidate: None for candidate in candidates}
     fig, ax = plt.subplots(figsize=(10, 2))
@@ -90,10 +103,11 @@ def plot_scores_2D(voters, candidates, results, winner, score_distances):
     # Plot approval distances as circles around candidates
     for candidate in candidates:
         candidate_political = candidate.get_political_affiliation()
-        circle = plt.Circle(candidate_political, score_distances[0], color=candidates_colors[candidate], fill=False, linestyle='--')
-        ax.add_artist(circle)
-        circle = plt.Circle(candidate_political, score_distances[1], color=candidates_colors[candidate], fill=False, linestyle='--')
-        ax.add_artist(circle)
+        for score_distance in score_distances:
+            circle = plt.Circle(candidate_political, score_distance, color=candidates_colors[candidate], fill=False, linestyle='--')
+            ax.add_artist(circle)
+        # circle = plt.Circle(candidate_political, score_distances[1], color=candidates_colors[candidate], fill=False, linestyle='--')
+        # ax.add_artist(circle)
     # Styling
     ax.set_xlabel("Political Affiliation X")
     ax.set_ylabel("Political Affiliation Y")
