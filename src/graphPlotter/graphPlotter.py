@@ -47,7 +47,8 @@ def plot_results_1D(voters, candidates, results, winner):
     plt.tight_layout()
 
     # Show the plot in a new window
-    plt.show()
+    # plt.show()
+    return fig
 
 def plot_approvals_2D(voters, candidates, results, winner, approval_distance):
     candidates_colors = {candidate: None for candidate in candidates}
@@ -80,7 +81,8 @@ def plot_approvals_2D(voters, candidates, results, winner, approval_distance):
     plt.ylim(-10, 10)
     plt.tight_layout() 
     # Show the plot in a new window
-    plt.show()
+    # plt.show()
+    return fig
 
 def plot_scores_2D(voters, candidates, results, winner, score_distances):
     candidates_colors = {candidate: None for candidate in candidates}
@@ -116,7 +118,8 @@ def plot_scores_2D(voters, candidates, results, winner, score_distances):
     plt.ylim(-10, 10)
     plt.tight_layout() 
     # Show the plot in a new window
-    plt.show()
+    # plt.show()
+    return fig
 
 def plot_results_2D(voters, candidates, results, winner):
     candidates_colors = {candidate: None for candidate in candidates}
@@ -147,10 +150,13 @@ def plot_results_2D(voters, candidates, results, winner):
     plt.tight_layout()
 
     # Show the plot in a new window
-    plt.show()
+    # plt.show()
+    return fig
 
 def plot_results_per_rounds_2D(voters, candidates, results, winner):
+    figs = []
     counter = 0
+
     for rnd in results:
         counter += 1
         round_candidates = list(rnd.keys())
@@ -196,4 +202,5 @@ def plot_results_per_rounds_2D(voters, candidates, results, winner):
         plt.tight_layout()
 
         # Show the plot in a new window
-        plt.show()
+        figs.append(fig)
+    return figs

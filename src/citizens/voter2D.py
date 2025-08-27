@@ -18,7 +18,7 @@ class SimpleVoter2D(Citizen):
         political_affiliation
         age (optional)
         """
-        super().__init__(id, political_affiliation, political_min, political_max, age, willingness_to_vote)
+        super().__init__(id, political_affiliation, political_min, political_max, age, 1)
 
     def __repr__(self):
         return f"Voter(id={self.id}, age={self.age}, political affiliation={self.political_affiliation}, voted={self.voted})"
@@ -93,7 +93,7 @@ class AdvancedVoter2D(Citizen):
     Advanced voter takes into account the candidate's popularity when ranking candidates.
     A voter has an ID, political affiliation, age, and a flag indicating whether they have
     voted or not. The voter can rank candidates based on their political affiliation.
-    Adds random to each candidate's score.
+    Adds random diviation to each candidate's score.
     
     The 2DVoter has political affiliation as a two integers. He ranks candidates per distance in two dimensional space.
     Political affiliation space is 2D square with min and max values for both axes - political_min and political_max.
@@ -124,10 +124,10 @@ class AdvancedVoter2D(Citizen):
             # Calculate Euclidean distance in 2D space
             res = ((political_affiliation[0] - self.political_affiliation[0]) ** 2 + 
                     (political_affiliation[1] - self.political_affiliation[1]) ** 2) ** 0.5
-            random_divergance = random.random() * candidate.get_popularity()
+            random_diviation = random.random() * candidate.get_popularity()
             if random.random() >= 0.5:
-                random_divergance = random_divergance * (-1)
-            candidate_distances.append({"candidate": candidate, "distance": res, "score": (res * (1-candidate.get_popularity()/2)) + random_divergance})
+                random_diviation = random_diviation * (-1)
+            candidate_distances.append({"candidate": candidate, "distance": res, "score": (res * (1-candidate.get_popularity()/2)) + random_diviation})
         ranked_candidates = sorted(candidate_distances, key=lambda x: x["score"])
         self.ranked_candidates = ranked_candidates
         # self.willingness_to_vote = self.willingness_to_vote * (1.0 - ranked_candidates[0]["score"]/(self.political_max*2))

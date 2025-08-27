@@ -57,3 +57,12 @@ class ApprovalVotingSystem(AbstractVotingSystem):
         sorted_res = {candidate: res[candidate] for candidate in sorted_candidates}
         sorted_res["not_voted"] = len(self.not_voted)
         return sorted_res
+
+    @staticmethod
+    def str_results(results):
+        """Convert results dictionary to a string representation."""
+        sorted_candidates = sorted(results, key=lambda k: results[k], reverse=True)
+        out = "Number of approvals per candidate:\n"
+        for candidate in sorted_candidates:
+            out += f"{candidate}: {results[candidate]}\n"
+        return out

@@ -56,3 +56,16 @@ class CondorcetVotingSystem(AbstractVotingSystem):
         if len(self.candidate_wins[candidate]) >= len(self.candidates) - 1:
             return {"winner": candidate, "pairwise_matrix": self.pairwise_matrix}
         return {"winner": None, "pairwise_matrix": self.pairwise_matrix}
+
+    @staticmethod
+    def str_results(results):
+        output = []
+        output.append("Condorcet Voting Results:")
+        output.append(f"Winner: {results['winner']}")
+        output.append("One on one results:")
+        for candidate, comparisons in results['pairwise_matrix'].items():
+            for other, score in comparisons.items():
+                if candidate == other:
+                    continue
+                output.append(f"{candidate.id} vs {other.id}: {score} x {comparisons[other]}")
+        return "\n".join(output)

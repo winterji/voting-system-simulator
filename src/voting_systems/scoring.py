@@ -51,3 +51,12 @@ class ScoringVotingSystem(AbstractVotingSystem):
         res = {candidate: self.votes_for_candidates[candidate] for candidate in self.candidates}
         res["not_voted"] = len(self.not_voted)
         return res
+
+    @staticmethod
+    def str_results(results):
+        """Convert results dictionary to a string representation."""
+        sorted_candidates = sorted(results.items(), key=lambda item: item[1], reverse=True)
+        out = "Number of votes per candidate:\n"
+        for candidate, votes in sorted_candidates:
+            out += f"{candidate}: {votes}\n"
+        return out

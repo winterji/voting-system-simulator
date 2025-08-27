@@ -5,58 +5,33 @@ from citizens import *
 from voting_systems import *
 from graphPlotter import *
 from citizensGenerators import *
+from citizensGenerators.CZVotersCandidates import candidates, clusters_v2
 
-LEFT_BOUND = -10
-RIGHT_BOUND = 10
+LEFT_BOUND = 1
+RIGHT_BOUND = 5
 
 # load voters and candidates
 
-clusters_v1 = [
-    ClusterDefinition((0, 0), 2.5, 0.2),
-    ClusterDefinition((1, -5), 2, 0.3),
-    ClusterDefinition((-1, 6), 1.5, 0.15),
-    ClusterDefinition((6, 0), 1.5, 0.1),
-    ClusterDefinition((-8, -5), 1, 0.08),
-    ClusterDefinition((3, -4), 1, 0.07),
-    ClusterDefinition((0, 0), 5, 0.1),
-]
+# generator = ClusteredVoterGenerator(LEFT_BOUND, RIGHT_BOUND, clusters=clusters_v2)
+# voters = generator.generate(1500, AdvancedVoter2D)
 
-clusters_v2 = [
-    ClusterDefinition((0, -8), 1.5, 0.12, willingness_to_vote=0.85),
-    ClusterDefinition((1, -5), 2, 0.23, willingness_to_vote=0.8),
-    ClusterDefinition((-7, -6), 1, 0.04, willingness_to_vote=0.88),
-    ClusterDefinition((3, -4), 1.2, 0.06, willingness_to_vote=0.85),
-    ClusterDefinition((6, -1), 1.5, 0.09, willingness_to_vote=0.9),
-    ClusterDefinition((2, 3), 1.5, 0.08, willingness_to_vote=0.85),
-    ClusterDefinition((-1, 7), 2, 0.17, willingness_to_vote=0.7),
-    ClusterDefinition((-1, -1), 3, 0.2, willingness_to_vote=0.10),
-]
+voterModel = SimpleVoter
+generator = ClusteredVoterGenerator(-10, 10, clusters=clusters_v2)
 
-generator = ClusteredVoterGenerator(LEFT_BOUND, RIGHT_BOUND, clusters=clusters_v2)
-voters = generator.generate(1500, AdvancedVoter2D)
+# voters = generator.generate(1500, voterModel, size_of_questions=15)
+voters = generator.generate(1500, voterModel)
+print(f"Average voters answer to questions: {sum([sum(v.political_affiliation) for v in voters]) / len(voters)}")
+
+all_true = [RIGHT_BOUND for _ in range(15)]
+all_false = [LEFT_BOUND for _ in range(15)]
+# mid = [True for _ in range(8)] + [False for _ in range(7)]
 
 # candidates = [
-#     Candidate("candidate1", 13, LEFT_BOUND, RIGHT_BOUND),
-#     Candidate("candidate2", -31, LEFT_BOUND, RIGHT_BOUND),
-#     Candidate("candidate3", 5, LEFT_BOUND, RIGHT_BOUND),
-#     Candidate("candidate4", 20, LEFT_BOUND, RIGHT_BOUND),
+#     Candidate("All-TRUE", all_true, LEFT_BOUND, RIGHT_BOUND, popularity=1),
+#     Candidate("All-FALSE", all_false, LEFT_BOUND, RIGHT_BOUND, popularity=1),
+#     # Candidate("Mid", mid, 0, 1, popularity=1)
 # ]
 
-candidates = [
-    Candidate("Spolu", [6, -2.2], LEFT_BOUND, RIGHT_BOUND, popularity=0.85),
-    # Candidate("ODS", [6, -3], LEFT_BOUND, RIGHT_BOUND, popularity=0.75),
-    # Candidate("TOP 09", [7, 2], LEFT_BOUND, RIGHT_BOUND, popularity=0.45),
-    # Candidate("KDU-ČSL", [3, -5], LEFT_BOUND, RIGHT_BOUND, popularity=0.4),
-    Candidate("ANO 2011", [2, -6], LEFT_BOUND, RIGHT_BOUND, popularity=0.9),
-    Candidate("SPD", [3, -8], LEFT_BOUND, RIGHT_BOUND, popularity=0.9),
-    Candidate("Piráti", [-2, 8], LEFT_BOUND, RIGHT_BOUND, popularity=0.6),
-    Candidate("STAN", [1, 4], LEFT_BOUND, RIGHT_BOUND, popularity=0.55),
-    Candidate("KSČM", [-9, -7], LEFT_BOUND, RIGHT_BOUND, popularity=0.25),
-    Candidate("SOCDEM", [-5, -3], LEFT_BOUND, RIGHT_BOUND, popularity=0.2),
-    Candidate("Zelení", [-6, 9], LEFT_BOUND, RIGHT_BOUND, popularity=0.35),
-    Candidate("Stačilo!", [-4, -5], LEFT_BOUND, RIGHT_BOUND, popularity=0.45),
-    Candidate("Motoristé", [7, -7], LEFT_BOUND, RIGHT_BOUND, popularity=0.35),
-]
 
 # select voting system according to parameter
 voting_system = PluralityVotingSystem
@@ -65,7 +40,7 @@ if len(sys.argv) > 1:
     voting_system_name = sys.argv[1]
     if voting_system_name == "condorcet":
         voting_system = CondorcetVotingSystem
-    elif voting_system_name == "approval":
+    elif voting_system_name == "approval" or voting_system_name == "approve":
         voting_system = ApprovalVotingSystem
         if len(sys.argv) <= 2:
             print("No approval distance provided, using default 3")
@@ -99,13 +74,18 @@ else:
 sim = Simulator(voting_system, voters, candidates, options=options)
 results, winner = sim.run()
 
-if voting_system == ApprovalVotingSystem:
-    plot_approvals_2D(voters, candidates, results, winner, sim.voting_system.approval_distance)
-elif voting_system == ScoringVotingSystem:
-    plot_scores_2D(voters, candidates, results, winner, sim.voting_system.score_limits)
-elif voting_system == InstantRunoffVotingSystem:
-    plot_results_per_rounds_2D(voters, candidates, results, winner)
-elif voting_system == PluralityVotingSystem:
-    print_percantage_results(results)
-    plot_results_2D(voters, candidates, results, winner)
+if voterModel == AdvancedVoterNDBool or voterModel == AdvancedVoterND:
+    print("AdvancedVoterND or AdvancedVoterNDBool model used - not plotting results")
+    if voting_system == PluralityVotingSystem:
+        print_percantage_results(results)
+else:
+    if voting_system == ApprovalVotingSystem:
+        plot_approvals_2D(voters, candidates, results, winner, sim.voting_system.approval_distance)
+    elif voting_system == ScoringVotingSystem:
+        plot_scores_2D(voters, candidates, results, winner, sim.voting_system.score_limits)
+    elif voting_system == InstantRunoffVotingSystem:
+        plot_results_per_rounds_2D(voters, candidates, results, winner)
+    elif voting_system == PluralityVotingSystem:
+        print_percantage_results(results)
+        plot_results_2D(voters, candidates, results, winner)
 
