@@ -127,7 +127,8 @@ class AdvancedVoter2D(Citizen):
             random_diviation = random.random() * candidate.get_popularity()
             if random.random() >= 0.5:
                 random_diviation = random_diviation * (-1)
-            candidate_distances.append({"candidate": candidate, "distance": res, "score": (res * (1-candidate.get_popularity()/2)) + random_diviation})
+            score = (res * (1-candidate.get_popularity()/2)) + random_diviation
+            candidate_distances.append({"candidate": candidate, "distance": res, "score": score})
         ranked_candidates = sorted(candidate_distances, key=lambda x: x["score"])
         self.ranked_candidates = ranked_candidates
         # self.willingness_to_vote = self.willingness_to_vote * (1.0 - ranked_candidates[0]["score"]/(self.political_max*2))

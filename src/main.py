@@ -15,7 +15,7 @@ RIGHT_BOUND = 5
 # generator = ClusteredVoterGenerator(LEFT_BOUND, RIGHT_BOUND, clusters=clusters_v2)
 # voters = generator.generate(1500, AdvancedVoter2D)
 
-voterModel = SimpleVoter
+voterModel = SimpleVoter2D
 generator = ClusteredVoterGenerator(-10, 10, clusters=clusters_v2)
 
 # voters = generator.generate(1500, voterModel, size_of_questions=15)

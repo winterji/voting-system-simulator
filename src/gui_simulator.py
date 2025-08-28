@@ -36,7 +36,7 @@ from graphPlotter import (
     plot_results_2D,
     print_percantage_results,  # (ano, v původním kódu je překlep)
 )
-from citizensGenerators import ClusteredVoterGenerator
+from citizensGenerators import ClusteredVoterGenerator, Uniform2DVoterGenerator, UniformGenerator
 from citizensGenerators.CZVotersCandidates import candidates, clusters_v2
 
 
@@ -64,8 +64,14 @@ class VotingSimulatorGUI(tk.Tk):
             # "AdvancedVoterNDBool": AdvancedVoterNDBool,
         }
 
+        self.voters_generator_map: dict[str, UniformGenerator] = {
+            "UniformGenerator": Uniform2DVoterGenerator,
+            "ClustersGenerator": ClusteredVoterGenerator
+        }
+
         self.var_voting_system = tk.StringVar(value="Plurality")
         self.var_voter_model = tk.StringVar(value="AdvancedVoter2D")
+        self.var_voters_generator = tk.StringVar(value="ClustersGenerator")
         self.var_num_voters = tk.IntVar(value=1500)
         self.var_left_bound = tk.DoubleVar(value=-15.0)
         self.var_right_bound = tk.DoubleVar(value=15.0)
@@ -103,35 +109,40 @@ class VotingSimulatorGUI(tk.Tk):
             frm, textvariable=self.var_voter_model, values=list(self.voter_model_map.keys()), state="readonly", width=28
         ).grid(row=3, column=0, sticky="we", pady=(0, 8))
 
+        ttk.Label(frm, text="Generátor voličů").grid(row=4, column=0, sticky="w")
+        ttk.Combobox(
+            frm, textvariable=self.var_voters_generator, values=list(self.voters_generator_map.keys()), state="readonly", width=28
+        ).grid(row=5, column=0, sticky="we", pady=(0, 8))
+
         sep1 = ttk.Separator(frm, orient="horizontal")
-        sep1.grid(row=4, column=0, sticky="we", pady=6)
+        sep1.grid(row=6, column=0, sticky="we", pady=6)
 
         # Základní parametry
-        ttk.Label(frm, text="Počet voličů").grid(row=5, column=0, sticky="w")
-        ttk.Entry(frm, textvariable=self.var_num_voters).grid(row=6, column=0, sticky="we", pady=(0, 6))
+        ttk.Label(frm, text="Počet voličů").grid(row=7, column=0, sticky="w")
+        ttk.Entry(frm, textvariable=self.var_num_voters).grid(row=8, column=0, sticky="we", pady=(0, 6))
 
-        ttk.Label(frm, text="Levý / pravý limit (generátor)").grid(row=7, column=0, sticky="w")
+        ttk.Label(frm, text="Levý / pravý limit (generátor)").grid(row=9, column=0, sticky="w")
         lrp = ttk.Frame(frm)
-        lrp.grid(row=8, column=0, sticky="we", pady=(0, 6))
+        lrp.grid(row=10, column=0, sticky="we", pady=(0, 6))
         ttk.Entry(lrp, width=8, textvariable=self.var_left_bound).pack(side=tk.LEFT)
         ttk.Label(lrp, text=" až ").pack(side=tk.LEFT, padx=4)
         ttk.Entry(lrp, width=8, textvariable=self.var_right_bound).pack(side=tk.LEFT)
 
-        ttk.Label(frm, text="size_of_questions (ND/NDBool) – volitelné").grid(row=9, column=0, sticky="w")
-        ttk.Entry(frm, textvariable=self.var_size_of_questions).grid(row=10, column=0, sticky="we", pady=(0, 6))
+        ttk.Label(frm, text="size_of_questions (ND/NDBool) – volitelné").grid(row=11, column=0, sticky="w")
+        ttk.Entry(frm, textvariable=self.var_size_of_questions).grid(row=12, column=0, sticky="we", pady=(0, 6))
 
         sep2 = ttk.Separator(frm, orient="horizontal")
-        sep2.grid(row=11, column=0, sticky="we", pady=6)
+        sep2.grid(row=13, column=0, sticky="we", pady=6)
 
         # Approval parametry
         lab_approval = ttk.LabelFrame(frm, text="Approval nastavení")
-        lab_approval.grid(row=12, column=0, sticky="we", pady=(0, 6))
+        lab_approval.grid(row=14, column=0, sticky="we", pady=(0, 6))
         ttk.Label(lab_approval, text="approval_distance").pack(anchor="w")
         ttk.Entry(lab_approval, textvariable=self.var_approval_distance).pack(fill="x")
 
         # Scoring parametry
         lab_scoring = ttk.LabelFrame(frm, text="Scoring nastavení")
-        lab_scoring.grid(row=13, column=0, sticky="we", pady=(0, 6))
+        lab_scoring.grid(row=15, column=0, sticky="we", pady=(0, 6))
         rowf = ttk.Frame(lab_scoring)
         rowf.pack(fill="x")
         ttk.Label(rowf, text="max_score").pack(side=tk.LEFT)
@@ -140,10 +151,10 @@ class VotingSimulatorGUI(tk.Tk):
         ttk.Entry(lab_scoring, textvariable=self.var_score_limits).pack(fill="x")
 
         sep3 = ttk.Separator(frm, orient="horizontal")
-        sep3.grid(row=14, column=0, sticky="we", pady=6)
+        sep3.grid(row=16, column=0, sticky="we", pady=6)
 
         btn = ttk.Button(frm, text="Spustit simulaci", command=self.run_simulation)
-        btn.grid(row=15, column=0, sticky="we", pady=(4, 0))
+        btn.grid(row=17, column=0, sticky="we", pady=(4, 0))
 
         frm.grid_columnconfigure(0, weight=1)
 
@@ -297,7 +308,11 @@ class VotingSimulatorGUI(tk.Tk):
                 options["score_limits"] = limits
 
             # Generace voličů
-            generator = ClusteredVoterGenerator(left, right, clusters=clusters_v2)
+            generator_class = self.voters_generator_map[self.var_voters_generator.get()]
+            generator = Uniform2DVoterGenerator(left, right)
+            if generator_class is ClusteredVoterGenerator:
+                generator = ClusteredVoterGenerator(left, right, clusters=clusters_v2)
+
             if size_of_questions is not None:
                 voters = generator.generate(num_voters, voter_model_cls, size_of_questions=size_of_questions)
             else:
