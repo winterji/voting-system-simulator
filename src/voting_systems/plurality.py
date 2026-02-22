@@ -37,6 +37,9 @@ class PluralityVotingSystem(AbstractVotingSystem):
         return res
     
 class PluralityRunoff(AbstractVotingSystem):
+    """
+    Not yet implemented. Two round system, if no candidate has more than 50% of the votes, the top 2 candidates go to the second round.
+    """
     def __init__(self, candidates, options):
         super().__init__(candidates, options)
         self.votes_for_candidates_round_1 = {candidate: 0 for candidate in candidates}
